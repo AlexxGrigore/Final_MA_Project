@@ -134,6 +134,6 @@ dataset/
 # Database
 database/
 
-audio_files/
-
-test/
+# audio_files/
+#
+# test/
