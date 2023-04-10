@@ -18,7 +18,6 @@ from video_features import *
 from database import *
 import time
 
-
 # import librosa
 from sklearn.decomposition import PCA
 
@@ -41,12 +40,14 @@ def save_entry_to_database(id, video_name, mfccs, colorhist_diffs, connection):
     add_video_descriptor(id, video_name, descr, connection)
     print('added ' + video_name + ' to database')
 
+
 # Processing of videos
 def process_videos(video_list, connection):
+    start_database_time = time.time()
     total = len(video_list)
     progress_count = 0
     for video in video_list:
-
+        star_time = time.time()
         progress_count += 1
         print('processing: ', video, ' (', progress_count, ' of ', total, ')')
         cap = cv2.VideoCapture(video)
@@ -96,7 +97,7 @@ def process_videos(video_list, connection):
                 ceps = np.squeeze(ceps)
 
                 # Apply PCA to reduce dimensionality
-                pca = PCA(n_components=12)
+                pca = PCA(n_components=min(12, len(ceps[0])))
                 ceps_pca = pca.fit_transform(ceps.T).T
 
                 # Reshape MFCCs to 13x13 matrix
@@ -111,7 +112,7 @@ def process_videos(video_list, connection):
 
                 # ceps = librosa.feature.mfcc(y=audio_frame, sr=fs, n_mfcc=20)
                 # ----------------------------------------------------
-                #ceps = np.squeeze(ceps)
+                # ceps = np.squeeze(ceps)
                 # pca = PCA(n_components=13)
                 # ceps = pca.fit_transform(ceps.T).T[:, :13]
                 # ----------------------------------------------------
@@ -183,4 +184,10 @@ def process_videos(video_list, connection):
         video_name.replace('dataset/', '')
         add_video_descriptor(progress_count, video_name, descr, connection)
         print('added ' + video + ' to database')
+
+        end_time = time.time()
+        print('it took {} seconds to process the video'.format(int(end_time - star_time)))
+
+    end_database_time = time.time()
+    print(' it took {} seconds to create the database'.format(int(end_database_time - start_database_time)))
     connection.commit()

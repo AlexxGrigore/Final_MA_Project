@@ -18,7 +18,9 @@ def main():
 
     # Create database table for storing videos
     create_table(connection)
-    video_paths = ['dataset/Civile_Techniek1.mp4', 'dataset/BlackKnight.avi', 'dataset/Danger_Humans.mp4']
+    # video_paths = ['dataset/Lemmings.mp4', 'dataset/BlackKnight.avi', 'dataset/Danger_Humans.mp4']
+    video_paths = ['dataset/Lemmings.mp4']
+
     process_videos(video_paths, connection)
 
     connection.close()
