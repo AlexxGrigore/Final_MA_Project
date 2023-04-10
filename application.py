@@ -1,3 +1,5 @@
+import time
+
 import CropVideo
 import VideoReader
 import video_query
@@ -5,6 +7,8 @@ from match import *
 
 
 def main():
+    start_time = time.time()
+
     path = "test/test_danger_humans.mp4"
     database_path = "database/videos.sqlite"
 
@@ -22,12 +26,14 @@ def main():
     # Match with one of the videos in the database
     name, score, frame = find_match(descriptor, database_path)
 
-    if name is None:
+    end_time = time.time()
+
+    if name is None or score < 0.5:
         print("No match found for the given video")
     else:
-        print("Best match found for video {} with a score of {} at frame {}".format(name, score, frame))
-
-
+        print("Best match found for video {} with a score of {} at frame {} and it took {} seconds".format(name, score,
+                                                                                                           frame,
+                                                                                                           end_time - start_time))
 
 
 if __name__ == "__main__":
