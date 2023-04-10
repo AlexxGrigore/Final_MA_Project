@@ -135,29 +135,29 @@ def process_videos(video_list, connection):
             frame_nbr += 1
 
             current_timestamp = cap.get(cv2.CAP_PROP_POS_MSEC) / 1000
-            if current_timestamp >= timestamp:
-                descr = {}
-                aux_list = np.zeros((len(mfccs) - 1, len(mfccs[0]) - 1, len(mfccs[0][0])))
-                for i in range(len(mfccs) - 1):
-                    for j in range(len(mfccs[0]) - 1):
-                        for k in range(len(mfccs[0][0])):
-                            aux_list[i][j][k] = mfccs[i][j][k]
-                # for aux_mfcc in mfccs:
-                #     aux_list
-
-                descr['mfcc'] = aux_list
-                # descr['audio'] = np.array(audio_powers)
-                # descr['colhist'] = np.array(colorhists)
-                # descr['tempdiff'] = np.array(sum_of_differences)
-                descr['chdiff'] = np.array(colorhist_diffs)
-                video_name = video
-                video_name.replace('dataset/', '')
-                add_video_descriptor(progress_count, video_name, descr, connection)
-                print('added ' + video + ' to database')
-                progress_count += 1
-                colorhist_diffs = []
-                mfccs = []
-                timestamp *= 2
+            # if current_timestamp >= timestamp:
+            #     descr = {}
+            #     aux_list = np.zeros((len(mfccs) - 1, len(mfccs[0]) - 1, len(mfccs[0][0])))
+            #     for i in range(len(mfccs) - 1):
+            #         for j in range(len(mfccs[0]) - 1):
+            #             for k in range(len(mfccs[0][0])):
+            #                 aux_list[i][j][k] = mfccs[i][j][k]
+            #     # for aux_mfcc in mfccs:
+            #     #     aux_list
+            #
+            #     descr['mfcc'] = aux_list
+            #     # descr['audio'] = np.array(audio_powers)
+            #     # descr['colhist'] = np.array(colorhists)
+            #     # descr['tempdiff'] = np.array(sum_of_differences)
+            #     descr['chdiff'] = np.array(colorhist_diffs)
+            #     video_name = video
+            #     video_name.replace('dataset/', '')
+            #     add_video_descriptor(progress_count, video_name, descr, connection)
+            #     print('added ' + video + ' to database')
+            #     progress_count += 1
+            #     colorhist_diffs = []
+            #     mfccs = []
+            #     timestamp *= 2
 
         print('end:', frame_nbr)
 
