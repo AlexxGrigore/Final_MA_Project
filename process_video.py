@@ -1,6 +1,7 @@
 #!/usr/bin/env python
 import subprocess
 import re
+import warnings
 from fractions import Fraction
 import os
 
@@ -82,8 +83,31 @@ def process_videos(video_list, connection):
             if len(audio_frame) >= int(0.01 * fs):
                 # power = np.mean(audio_frame ** 2)
                 # audio_powers.append(power)
-                ceps = librosa.feature.mfcc(y=audio_frame, sr=16000, n_mfcc=13, n_fft=512, win_length=256)
-                #ceps, _, _ = compute_mfcc.mfcc(audio_frame)
+                # ceps = librosa.feature.mfcc(y=audio_frame, sr=16000, n_mfcc=13, n_fft=512, win_length=256)
+
+                # ----------------------------------------------------
+                # APPLY PCA TO REDUCE CEPS SIZE
+
+                # Compute MFCCs
+                with warnings.catch_warnings():
+                    warnings.filterwarnings("ignore", message="n_fft=512 is too large for input signal of length=2")
+                    ceps = librosa.feature.mfcc(y=audio_frame, sr=16000, n_mfcc=13, n_fft=512, hop_length=256)
+
+                ceps = np.squeeze(ceps)
+
+                # Apply PCA to reduce dimensionality
+                pca = PCA(n_components=12)
+                ceps_pca = pca.fit_transform(ceps.T).T
+
+                # Reshape MFCCs to 13x13 matrix
+                ceps_final = np.zeros((13, 13))
+                ceps_final[:ceps_pca.shape[0], :ceps_pca.shape[1]] = ceps_pca
+
+                ceps = ceps_final
+                # ----------------------------------------------------
+
+                # ceps, _, _ = compute_mfcc.mfcc(audio_frame)
+                # ceps = np.nan_to_num(ceps)
 
                 # ceps = librosa.feature.mfcc(y=audio_frame, sr=fs, n_mfcc=20)
                 # ----------------------------------------------------

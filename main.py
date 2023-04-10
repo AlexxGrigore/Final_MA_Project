@@ -17,8 +17,8 @@ def main():
     connection = create_database("database/videos.sqlite")
 
     # Create database table for storing videos
-    # create_table(connection)
-
+    create_table(connection)
+    video_paths = ['dataset/Civile_Techniek1.mp4', 'dataset/BlackKnight.avi', 'dataset/Danger_Humans.mp4']
     process_videos(video_paths, connection)
 
     connection.close()

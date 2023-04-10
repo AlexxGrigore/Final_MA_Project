@@ -50,7 +50,7 @@ def find_match(descriptor, database_path):
         if score_cd > score_mfcc:
             frame = frame_cd
 
-        score = 0.8 * score_mfcc + 0.2 * score_cd
+        score = 0.5 * score_mfcc + 0.5 * score_cd
 
         if score > best_score:
             best_score = score
@@ -80,6 +80,7 @@ def sliding_window(signal, window, compare_func):
     while i < len(signal) - window_length:
         # Compute the difference between window and signal chunk
         diff = compare_func(window, signal[i: i + window_length])
+
         # diff = abs(diff)
 
         if diff > minimum:

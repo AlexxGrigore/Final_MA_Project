@@ -5,7 +5,7 @@ from match import *
 
 
 def main():
-    path = "test/test_welcome_to_life.mp4"
+    path = "test/test_danger_humans.mp4"
     database_path = "database/videos.sqlite"
 
     # Create VideoReader object
@@ -26,6 +26,8 @@ def main():
         print("No match found for the given video")
     else:
         print("Best match found for video {} with a score of {} at frame {}".format(name, score, frame))
+
+
 
 
 if __name__ == "__main__":

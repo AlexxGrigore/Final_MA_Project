@@ -1,4 +1,5 @@
 import os
+import warnings
 
 import numpy as np
 from scipy.io import wavfile
@@ -52,8 +53,32 @@ def get_query_descriptor(video, path):
 
             # Extract MFCCs
             # ceps = librosa.feature.mfcc(y=sample, sr=16000, n_mfcc=13)
-            ceps = librosa.feature.mfcc(y=sample, sr=16000, n_mfcc=13, n_fft=512, win_length=256)
-            #ceps, _, _ = compute_mfcc.mfcc(sample)
+            # ceps = librosa.feature.mfcc(y=sample, sr=16000, n_mfcc=13, n_fft=512, win_length=256)
+            # ceps, _, _ = compute_mfcc.mfcc(sample)
+            # ceps = np.nan_to_num(ceps)
+
+            # ----------------------------------------------------
+            # APPLY PCA TO REDUCE CEPS SIZE
+
+            # Compute MFCCs
+            with warnings.catch_warnings():
+                warnings.filterwarnings("ignore", message="n_fft=512 is too large for input signal of length=2")
+                ceps = librosa.feature.mfcc(y=sample, sr=16000, n_mfcc=13, n_fft=512, hop_length=256)
+
+            ceps = np.squeeze(ceps)
+
+            # Apply PCA to reduce dimensionality
+            pca = PCA(n_components=12)
+            ceps_pca = pca.fit_transform(ceps.T).T
+
+            # Reshape MFCCs to 13x13 matrix
+            ceps_final = np.zeros((13, 13))
+            ceps_final[:ceps_pca.shape[0], :ceps_pca.shape[1]] = ceps_pca
+
+            ceps = ceps_final
+            # ----------------------------------------------------
+
+
             # ----------------------------------------------------
             ceps = np.squeeze(ceps)
             # pca = PCA(n_components=13)
